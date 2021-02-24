@@ -28,7 +28,8 @@ public class TitanicListing extends JFrame {
 //        model.addRow(new Object[]{"testName3", "testGender3", 26});
 
         TitanicQueries tq = new TitanicQueries();
-        List<Passenger> passengers = tq.getPassengersByName("james");
+//      List<Passenger> passengers = tq.getPassengersByName("James");
+        List<Passenger> passengers = tq.getPassengersByGender("male");
 
 //        System.out.println("total passengers wis " + passengers.size());
 

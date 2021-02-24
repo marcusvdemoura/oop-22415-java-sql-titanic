@@ -1,7 +1,6 @@
 package com.company;
 
 
-
 import com.company.models.Passenger;
 
 import java.sql.*;
@@ -16,6 +15,7 @@ public class TitanicQueries {
 
 
     private PreparedStatement getPeopleByName;
+    private PreparedStatement getPeopleByGender;
 
     public TitanicQueries() {
 
@@ -23,9 +23,13 @@ public class TitanicQueries {
             Class.forName("com.mysql.jdbc.Driver");
             Connection con = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
 
+
+            String sqlQueryGender = "select name, gender, age from titanic WHERE gender like ?";
+            getPeopleByGender = con.prepareStatement(sqlQueryGender);
+
             // select people by name
-            String sqlQuery = "select name, gender, age from titanic WHERE name like ?";
-            getPeopleByName = con.prepareStatement(sqlQuery);
+            String sqlQueryName = "select name, gender, age from titanic WHERE name like ?";
+            getPeopleByName = con.prepareStatement(sqlQueryName);
 
         } catch (SQLException e) {
 
@@ -48,7 +52,7 @@ public class TitanicQueries {
 
             results = new ArrayList<Passenger>();
 
-            while(resultSet.next()) {
+            while (resultSet.next()) {
                 Passenger newPassenger = new Passenger();
                 newPassenger.name = resultSet.getString("name");
                 newPassenger.gender = resultSet.getString("gender");
@@ -57,6 +61,35 @@ public class TitanicQueries {
             }
 
 
+        } catch (SQLException e) {
+
+        } catch (Exception e) {
+
+        }
+
+        return results;
+    }
+
+    public List<Passenger> getPassengersByGender(String gender) {
+
+        ResultSet resultSet = null;
+        List<Passenger> results = null;
+
+        try {
+
+            getPeopleByGender.setString(1, "%" + gender + "%");
+
+            resultSet = getPeopleByGender.executeQuery();
+
+            results = new ArrayList<Passenger>();
+
+            while (resultSet.next()) {
+                Passenger newPassenger = new Passenger();
+                newPassenger.name = resultSet.getString("name");
+                newPassenger.gender = resultSet.getString("gender");
+                newPassenger.age = resultSet.getInt("age");
+                results.add(newPassenger);
+            }
 
 
         } catch (SQLException e) {
